@@ -6,10 +6,36 @@ import { categories, tools } from "@/lib/tools/registry";
 export default function Home() {
   const popular = tools.filter((tool) => tool.popular).slice(0, 6);
   const categoryHighlights = [
-    { slug: "work", label: "給与・税金", tools: ["手取り計算", "給与手取り計算", "所得税計算", "住民税計算"] },
-    { slug: "life", label: "生活・お金", tools: ["住宅ローン計算", "家賃初期費用計算", "電気代計算", "ガソリン代計算"] },
-    { slug: "date", label: "日付・時間", tools: ["年齢計算", "日付差計算", "営業日計算", "日付計算"] },
-    { slug: "family", label: "育児・家族", tools: ["出産予定日計算", "妊娠週数計算", "保育園年齢計算", "児童手当計算"] },
+    {
+      slug: "work",
+      label: "給与・税金",
+      tools: ["手取り計算", "給与手取り計算", "所得税計算", "住民税計算"],
+    },
+    {
+      slug: "life",
+      label: "生活・交通",
+      tools: [
+        "住宅ローン計算",
+        "家賃初期費用計算",
+        "電気代計算",
+        "ガソリン代計算",
+      ],
+    },
+    {
+      slug: "date",
+      label: "日付・時間",
+      tools: ["年齢計算", "日付差計算", "営業日計算", "日付計算"],
+    },
+    {
+      slug: "family",
+      label: "育児・家族",
+      tools: [
+        "出産予定日計算",
+        "妊娠週数計算",
+        "保育園年齢計算",
+        "児童手当計算",
+      ],
+    },
   ];
   return (
     <main>
@@ -62,14 +88,14 @@ export default function Home() {
       <section className="mx-auto max-w-6xl px-5 py-14">
         <div className="mb-7 flex items-end justify-between">
           <div>
-            <p className="text-sm font-bold text-blue-600">POPULAR CALCULATORS</p>
-            <h2 className="mt-1 text-2xl font-black">よく使われる計算ツール</h2>
+            <p className="text-sm font-bold text-blue-600">START HERE</p>
+            <h2 className="mt-1 text-2xl font-black">まず使うならこのツール</h2>
           </div>
           <Link
             href="/tools/"
             className="inline-flex items-center gap-1 text-sm font-bold text-blue-600"
           >
-            すべて見る
+            全ツールを見る
             <svg
               className="h-4 w-4"
               viewBox="0 0 20 20"
@@ -96,12 +122,18 @@ export default function Home() {
       <section className="border-y border-slate-200 bg-white">
         <div className="mx-auto max-w-6xl px-5 py-14">
           <div className="mb-7">
-            <p className="text-sm font-bold text-blue-600">BROWSE BY CATEGORY</p>
-            <h2 className="mt-1 text-2xl font-black">目的から計算ツールを探す</h2>
+            <p className="text-sm font-bold text-blue-600">
+              BROWSE BY CATEGORY
+            </p>
+            <h2 className="mt-1 text-2xl font-black">
+              目的から計算ツールを探す
+            </h2>
           </div>
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {categoryHighlights.map((category) => {
-              const count = tools.filter((tool) => tool.category === category.slug).length;
+              const count = tools.filter(
+                (tool) => tool.category === category.slug,
+              ).length;
               return (
                 <Link
                   key={category.slug}
@@ -119,7 +151,9 @@ export default function Home() {
                   <p className="mt-2 text-sm leading-6 text-slate-500">
                     {category.tools.join("・")}
                   </p>
-                  <p className="mt-4 text-xs font-bold text-blue-600">{count} tools を見る →</p>
+                  <p className="mt-4 text-xs font-bold text-blue-600">
+                    {count} tools を見る →
+                  </p>
                 </Link>
               );
             })}

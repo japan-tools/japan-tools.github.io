@@ -14,8 +14,8 @@ export default function ToolsPage() {
   return (
     <main className="mx-auto max-w-6xl px-5 py-12">
       <div className="max-w-3xl">
-        <p className="text-sm font-bold text-blue-600">ALL TOOLS</p>
-        <h1 className="mt-2 text-4xl font-black">無料ツール一覧</h1>
+        <p className="text-sm font-bold text-blue-600">TOOL DIRECTORY</p>
+        <h1 className="mt-2 text-4xl font-black">すべてのツール</h1>
         <p className="mt-4 leading-7 text-slate-600">
           給与・税金から日付、生活費、開発まで、ブラウザだけで使える無料ツールをまとめています。
         </p>

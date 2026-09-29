@@ -21,6 +21,9 @@ select,
 textarea {
   font: inherit;
 }
+.tool-card > button + label {
+  margin-top: 1.5rem;
+}
 
 .rdp-root {
   --rdp-accent-color: #2563eb;

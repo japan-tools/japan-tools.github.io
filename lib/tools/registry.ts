@@ -1,3 +1,5 @@
+import { catalogTools } from "./catalog";
+
 export type Tool = {
   slug: string;
   name: string;
@@ -415,6 +417,9 @@ export const tools: Tool[] = [
     keywords: ["JSON", "Formatter", "JSON整形"],
   },
 ];
+
+const registeredNames = new Set(tools.map((tool) => tool.name));
+tools.push(...catalogTools.filter((tool) => !registeredNames.has(tool.name)));
 
 export const categories = [
   {
