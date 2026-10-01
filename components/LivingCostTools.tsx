@@ -17,20 +17,44 @@ export default function LivingCostScreen({ name }: { name: string }) {
   const isUtility = name.includes("ガス代") || name.includes("水道代");
   const isLiving = name.includes("暮らし生活費") || name === "家族生活費計算";
   const isPlan = name.includes("プラン比較");
+  const isSaving = name.includes("削減");
+  const isSubscription = name.includes("サブスク");
   const [first, setFirst] = useState(
-    isGamingPc ? "500" : isAppliance ? "100" : isLiving ? "80000" : "20",
+    isGamingPc
+      ? "500"
+      : isAppliance
+        ? "100"
+        : isLiving
+          ? "80000"
+          : isSaving
+            ? "12000"
+            : isSubscription
+              ? "1500"
+              : "20",
   );
   const [second, setSecond] = useState(
-    isGamingPc ? "50" : isLiving ? "60000" : isUtility ? "20" : "8",
+    isGamingPc
+      ? "50"
+      : isLiving
+        ? "60000"
+        : isUtility
+          ? "20"
+          : isSaving
+            ? "8000"
+            : isSubscription
+              ? "990"
+              : "8",
   );
   const [third, setThird] = useState(
-    isGamingPc ? "8" : isUtility ? "180" : "30",
+    isGamingPc ? "8" : isUtility ? "180" : isSubscription ? "500" : "30",
   );
   const [fourth, setFourth] = useState(
-    isGamingPc ? "30" : isUtility ? "1000" : "31",
+    isGamingPc ? "30" : isUtility ? "1000" : isSubscription ? "0" : "31",
   );
   const [fifth, setFifth] = useState(isGamingPc ? "31" : "0");
   const number = (input: string) => Math.max(0, Number(input) || 0);
+  const planTotalA = number(first) * number(second) + number(fourth);
+  const planTotalB = number(first) * number(third) + number(fifth);
   const result = isGamingPc
     ? ((number(first) + number(second)) *
         number(third) *
@@ -50,9 +74,16 @@ export default function LivingCostScreen({ name }: { name: string }) {
               number(fourth) +
               number(fifth)
             : isPlan
-              ? Math.abs(number(second) - number(third)) * number(first) +
-                Math.abs(number(fourth) - number(fifth))
-              : number(first) * (name.includes("年間") ? 12 : 1);
+              ? Math.abs(planTotalA - planTotalB)
+              : isSaving
+                ? Math.max(0, number(first) - number(second)) * 12
+                : isSubscription
+                  ? (number(first) +
+                      number(second) +
+                      number(third) +
+                      number(fourth)) *
+                    12
+                  : number(first) * (name.includes("年間") ? 12 : 1);
   const groups: Record<string, [string, string, (value: string) => void][]> = {
     gaming: [
       ["PC本体の消費電力（W）", first, setFirst],
@@ -85,17 +116,23 @@ export default function LivingCostScreen({ name }: { name: string }) {
       ["その他", fifth, setFifth],
     ],
     plan: [
-      ["使用量", first, setFirst],
-      ["プランA単価", second, setSecond],
-      ["プランB単価", third, setThird],
+      ["使用量（kWh）", first, setFirst],
+      ["プランA単価（円/kWh）", second, setSecond],
+      ["プランB単価（円/kWh）", third, setThird],
       ["A基本料金", fourth, setFourth],
       ["B基本料金", fifth, setFifth],
     ],
-    default: [
-      ["月額・使用量", first, setFirst],
-      ["単価・削減後", second, setSecond],
-      ["予備", third, setThird],
+    saving: [
+      ["削減前の月額", first, setFirst],
+      ["削減後の月額", second, setSecond],
     ],
+    subscription: [
+      ["サブスク①（月額）", first, setFirst],
+      ["サブスク②（月額）", second, setSecond],
+      ["サブスク③（月額）", third, setThird],
+      ["サブスク④（月額）", fourth, setFourth],
+    ],
+    default: [["月額", first, setFirst]],
   };
   const group = isGamingPc
     ? "gaming"
@@ -109,7 +146,18 @@ export default function LivingCostScreen({ name }: { name: string }) {
             ? "living"
             : isPlan
               ? "plan"
-              : "default";
+              : isSaving
+                ? "saving"
+                : isSubscription
+                  ? "subscription"
+                  : "default";
+  const caption = isPlan
+    ? `安いのは${planTotalA <= planTotalB ? "プランA" : "プランB"}（差額）`
+    : isSaving
+      ? "年間の削減額"
+      : isSubscription
+        ? "サブスクの年間費用"
+        : name;
   return (
     <Card>
       <div className="border-b border-slate-100 pb-5">
@@ -130,11 +178,27 @@ export default function LivingCostScreen({ name }: { name: string }) {
         ))}
       </div>
       <Result>
-        <div className="text-sm text-slate-500">{name}</div>
+        <div className="text-sm text-slate-500">{caption}</div>
         <div className="mt-1 text-3xl text-blue-700">
           <Money value={result} />
         </div>
       </Result>
+      {isPlan && (
+        <dl className="mt-4 divide-y divide-slate-100 rounded-xl border border-slate-100 text-left">
+          <div className="flex items-baseline justify-between px-4 py-2.5">
+            <dt className="text-sm text-slate-600">プランAの合計</dt>
+            <dd className="text-sm font-bold text-slate-900">
+              <Money value={planTotalA} />
+            </dd>
+          </div>
+          <div className="flex items-baseline justify-between px-4 py-2.5">
+            <dt className="text-sm text-slate-600">プランBの合計</dt>
+            <dd className="text-sm font-bold text-slate-900">
+              <Money value={planTotalB} />
+            </dd>
+          </div>
+        </dl>
+      )}
       <p className="mt-4 text-xs leading-5 text-slate-500">
         入力した単価・料金による概算です。地域・契約プランで実額は変わります。
       </p>
